@@ -39,7 +39,7 @@ public class DrugPairCalculator {
 	 * @return A set of all drug pairs administered together with a given
 	 *         minimum occurrence.
 	 */
-	public void getAllDrugPairs(final String inFilename_,
+	public void writeAllDrugPairs(final String inFilename_,
 			final String outFilename_, final int minOccurrence_) {
 		LOGGER.info(
 				"Going to get all drug pairs from {} with minimum occurrence {} and write to file {}.",
@@ -202,5 +202,42 @@ public class DrugPairCalculator {
 		}
 
 		return allDrugPairs;
+	}
+
+	/**
+	 * Create an output filename given an input filename and a minimum number of
+	 * occurrences.
+	 * 
+	 * @param inputFilename_
+	 *            The name of the input file.
+	 * @param minOccurrences_
+	 *            The minimum number of occurrences of a drug pair.
+	 * @return The output filename.
+	 */
+	private static String createOutputFilename(final String inputFilename_,
+			final Integer minOccurrences_) {
+		return inputFilename_ + ".min" + minOccurrences_ + ".pairs";
+	}
+
+	/**
+	 * Runs a drug pair calculation.
+	 * 
+	 * @param args_
+	 *            The arguments to provide. arg 0: The input file; arg 1: The
+	 *            minimum number of occurrences; arg 2 (optional): The output
+	 *            file.
+	 */
+	public static void main(final String[] args_) {
+		String inputFilename = args_[0];
+		Integer minOccurrences = Integer.valueOf(args_[1]);
+		String outputFile = null;
+		if (args_.length > 2) {
+			outputFile = args_[2];
+		} else {
+			createOutputFilename(inputFilename, minOccurrences);
+		}
+
+		DrugPairCalculator calculator = new DrugPairCalculator();
+		calculator.writeAllDrugPairs(inputFilename, outputFile, minOccurrences);
 	}
 }

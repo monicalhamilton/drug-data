@@ -7,12 +7,17 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import api.AdministrationInstance;
 import api.SingleDrugAdministration;
 
 public class DrugFileParser {
+	
+	private static final Logger LOGGER= LoggerFactory.getLogger(DrugFileParser.class);
 
-	protected static final String DELIMITER = ",";
+	private static final String DELIMITER = ",";
 
 	protected static final int PATIENT_ID_INDEX = 0;
 	protected static final int ADMIN_DATE_INDEX = 1;
@@ -44,16 +49,15 @@ public class DrugFileParser {
 				drugAdministrations.add(drugAdministration);
 			}
 		} catch (FileNotFoundException e) {
-			// TODO
-			System.out.println("Could not parse file " + filename_ + " because file was not found.");
+			LOGGER.error("Could not parse file {} because file was not found.", filename_, e);
 		} catch (IOException e) {
-			// TODO
+			LOGGER.error("Could not parse file {} due to I/O exception.", filename_, e);
 		} finally {
 			if (r != null) {
 				try {
 					r.close();
 				} catch (IOException e) {
-					// TODO
+					LOGGER.warn("Could not close file {}.", filename_, e);
 				}
 			}
 		}

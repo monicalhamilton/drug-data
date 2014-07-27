@@ -7,6 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +28,8 @@ public class DrugPairCalculator {
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(DrugPairCalculator.class);
+
+	private static final int DEFAULT_MINIMUM_OCCURRENCES = 25;
 
 	private final DrugFileParser _drugFileParser = new DrugFileParser();
 	private final DrugPairFileWriter _drugPairFileWriter = new DrugPairFileWriter();
@@ -219,6 +228,22 @@ public class DrugPairCalculator {
 		return inputFilename_ + ".min" + minOccurrences_ + ".pairs";
 	}
 
+	private static Options getOptions() {
+		Options options = new Options();
+		// Input file option
+		Option inputFilename = OptionBuilder.withLongOpt("in").withArgName("in").hasArg()
+				.isRequired(true).withDescription("input filename").create();
+		options.addOption(inputFilename);
+		Option outputFilename = OptionBuilder.withLongOpt("out").withArgName("out").hasArg()
+				.isRequired(false).withDescription("output filename").create();
+		options.addOption(outputFilename);
+		Option minimumOccurrences = OptionBuilder.withLongOpt("min").withArgName("min").hasArg()
+				.isRequired(false).withDescription("minimum occurrences")
+				.create();
+		options.addOption(minimumOccurrences);
+		return options;
+	}
+
 	/**
 	 * Runs a drug pair calculation.
 	 * 
@@ -228,16 +253,44 @@ public class DrugPairCalculator {
 	 *            file.
 	 */
 	public static void main(final String[] args_) {
-		String inputFilename = args_[0];
-		Integer minOccurrences = Integer.valueOf(args_[1]);
-		String outputFile = null;
-		if (args_.length > 2) {
-			outputFile = args_[2];
-		} else {
-			createOutputFilename(inputFilename, minOccurrences);
+		CommandLineParser parser = new BasicParser();
+		Options options = getOptions();
+		try {
+			
+			// Input file is NOT optional 
+			CommandLine line = parser.parse(options, args_);
+			String inputFilename = null;
+			if (line.hasOption("in")) {
+				inputFilename = line.getOptionValue("in");
+			} else {
+				LOGGER.error("Could not calculate drug pairs due to missing input filename.");
+				System.exit(1);
+			}
+			
+			// Min occurrences is optional
+			Integer minOccurrences;
+			if (line.hasOption("min")) {
+				minOccurrences = Integer.valueOf(line.getOptionValue("min"));
+			} else {
+				minOccurrences = DEFAULT_MINIMUM_OCCURRENCES;
+			}
+			
+			// Output is optional
+			String outputFilename;
+			if (line.hasOption("out")) {
+				outputFilename = line.getOptionValue("out");
+			} else {
+				outputFilename = createOutputFilename(inputFilename, minOccurrences);
+			}
+
+			DrugPairCalculator calculator = new DrugPairCalculator();
+			calculator.writeAllDrugPairs(inputFilename, outputFilename, minOccurrences);
+			
+		} catch (ParseException e) {
+			LOGGER.error(
+					"Could not calculate drug pairs due to parse exception.", e);
 		}
 
-		DrugPairCalculator calculator = new DrugPairCalculator();
-		calculator.writeAllDrugPairs(inputFilename, outputFile, minOccurrences);
+
 	}
 }

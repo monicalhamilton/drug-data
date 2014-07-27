@@ -14,14 +14,16 @@ import api.AdministrationInstance;
 import api.SingleDrugAdministration;
 
 public class DrugFileParser {
-	
-	private static final Logger LOGGER= LoggerFactory.getLogger(DrugFileParser.class);
+
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(DrugFileParser.class);
 
 	private static final String DELIMITER = ",";
+	private static final int DEBUG_INTERVAL = 10;
 
-	protected static final int PATIENT_ID_INDEX = 0;
-	protected static final int ADMIN_DATE_INDEX = 1;
-	protected static final int DRUG_NAME_INDEX = 2;
+	private static final int PATIENT_ID_INDEX = 0;
+	private static final int ADMIN_DATE_INDEX = 1;
+	private static final int DRUG_NAME_INDEX = 2;
 
 	public DrugFileParser() {
 	}
@@ -39,19 +41,30 @@ public class DrugFileParser {
 	 *             If the
 	 */
 	public List<SingleDrugAdministration> parseFile(final String filename_) {
+		LOGGER.info("Parsing file {} into drug administration objects.",
+				filename_);
 		List<SingleDrugAdministration> drugAdministrations = new LinkedList<SingleDrugAdministration>();
 		BufferedReader r = null;
+
 		try {
 			r = new BufferedReader(new FileReader(filename_));
 			String line;
+			int lineCount = 0;
 			while ((line = r.readLine()) != null) {
 				SingleDrugAdministration drugAdministration = parseLine(line);
 				drugAdministrations.add(drugAdministration);
+				lineCount++;
+				if (lineCount % DEBUG_INTERVAL == 0) {
+					LOGGER.info("Parsed {} lines.", lineCount);
+				}
 			}
+			LOGGER.info("Finished parsing file {} with {} total lines.", filename_, lineCount);
 		} catch (FileNotFoundException e) {
-			LOGGER.error("Could not parse file {} because file was not found.", filename_, e);
+			LOGGER.error("Could not parse file {} because file was not found.",
+					filename_, e);
 		} catch (IOException e) {
-			LOGGER.error("Could not parse file {} due to I/O exception.", filename_, e);
+			LOGGER.error("Could not parse file {} due to I/O exception.",
+					filename_, e);
 		} finally {
 			if (r != null) {
 				try {
@@ -73,7 +86,6 @@ public class DrugFileParser {
 	 * @return The drug administration.
 	 */
 	protected SingleDrugAdministration parseLine(final String line_) {
-
 		String[] splitLine = line_.split(DELIMITER);
 		String patientId = splitLine[PATIENT_ID_INDEX];
 		String adminDate = splitLine[ADMIN_DATE_INDEX];
@@ -84,6 +96,8 @@ public class DrugFileParser {
 
 		SingleDrugAdministration drugAdmin = new SingleDrugAdministration(
 				adminInstance, drugName);
+
+		LOGGER.info("Parsed line into {}", drugAdmin);
 
 		return drugAdmin;
 	}

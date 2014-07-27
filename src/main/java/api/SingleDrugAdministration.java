@@ -40,6 +40,12 @@ public class SingleDrugAdministration {
 	}
 
 	@Override
+	public String toString() {
+		return "SingleDrugAdministration [_administrationInstance="
+				+ _administrationInstance + ", _drug=" + _drug + "]";
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

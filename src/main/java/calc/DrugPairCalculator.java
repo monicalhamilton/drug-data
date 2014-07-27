@@ -76,10 +76,18 @@ public class DrugPairCalculator {
 	public Set<DrugPair> getDrugPairsWithMinOccurence(
 			final List<SingleDrugAdministration> drugAdministrations_,
 			final int minOccurrence_) {
+		LOGGER.info(
+				"Going to calculate the drug pairs with minimum occurrence {} "
+						+ "on a list of drug administrations of size {}.",
+				minOccurrence_, drugAdministrations_.size());
+
 		Map<AdministrationInstance, Set<String>> drugAdminMap = getMapOfAdminInstanceToDrugsAdministered(drugAdministrations_);
 		Map<DrugPair, Integer> drugPairMap = getMapOfDrugPairtoOccurrence(drugAdminMap);
 
 		// Now only return those that meet the minimum occurrence requirements
+		LOGGER.info(
+				"Going to calculate which of the {} drug pairs occurred more than {} times.",
+				drugPairMap.size(), minOccurrence_);
 		Set<DrugPair> drugPairsWithMinOccurrence = new HashSet<DrugPair>();
 		for (Map.Entry<DrugPair, Integer> drugPairEntry : drugPairMap
 				.entrySet()) {
@@ -89,6 +97,9 @@ public class DrugPairCalculator {
 				drugPairsWithMinOccurrence.add(drugPair);
 			}
 		}
+		LOGGER.info(
+				"Found {} drug pairs that occurred more than {} times.",
+				drugPairsWithMinOccurrence.size(), minOccurrence_);
 		return drugPairsWithMinOccurrence;
 	}
 
@@ -104,6 +115,10 @@ public class DrugPairCalculator {
 	 */
 	protected Map<AdministrationInstance, Set<String>> getMapOfAdminInstanceToDrugsAdministered(
 			final List<SingleDrugAdministration> drugAdministrations_) {
+		LOGGER.info(
+				"Going to map administration instances to set of drugs for {} drug administrations.",
+				drugAdministrations_.size());
+
 		// Initialize the map to return.
 		Map<AdministrationInstance, Set<String>> drugAdminMap = new HashMap<AdministrationInstance, Set<String>>();
 
@@ -141,6 +156,9 @@ public class DrugPairCalculator {
 	 */
 	protected Map<DrugPair, Integer> getMapOfDrugPairtoOccurrence(
 			final Map<AdministrationInstance, Set<String>> drugAdminMap_) {
+		LOGGER.info("Going to map drug pairs to number of occurrences for "
+				+ "{} administration instances.", drugAdminMap_.size());
+
 		// Initialize the map to return
 		Map<DrugPair, Integer> drugPairToOccurrenceMap = new HashMap<DrugPair, Integer>();
 
@@ -164,6 +182,8 @@ public class DrugPairCalculator {
 			}
 		}
 
+		LOGGER.info("Mapped {} drug pairs to their respecitive occurrences.",
+				drugPairToOccurrenceMap.size());
 		return drugPairToOccurrenceMap;
 
 	}
@@ -177,6 +197,8 @@ public class DrugPairCalculator {
 	 * @return The set of all drug pairs.
 	 */
 	protected Set<DrugPair> findAllDrugPairs(final Set<String> drugSet_) {
+		LOGGER.info("Finding all drug pairs for {} drugs.", drugSet_.size());
+		
 		// Create the set to return.
 		Set<DrugPair> allDrugPairs = new HashSet<DrugPair>();
 
@@ -190,25 +212,26 @@ public class DrugPairCalculator {
 		// If there are two or more drugs, make all possible drug pairs.
 		// Let's iterate twice over a list (convert the set to a list).
 		List<String> drugList = new LinkedList<String>(drugSet_);
-		// a and b are pointers.
-		int a = 0;
+		int pointerA = 0;
 		for (String drugA : drugList) {
-			int b = 0;
+			LOGGER.info("Drug A: {}. Pointer A: {}.", drugA, pointerA);
+			int pointerB = 0;
 			for (String drugB : drugList) {
-				if (a >= b) {
+				LOGGER.info("Drug B: {}. Pointer B: {}.", drugB, pointerB);
+				if (pointerA < pointerB) {
+					// This is a valid drug pair
+					allDrugPairs.add(new DrugPair(drugA, drugB));
+					
 					// If a and b are pointing to the same drug, skip
 					// because the drug pair (a, a) is not meaningful.
 					// If a is pointing to a drug after b, skip
 					// because we don't need both (a, b) and (b, a).
-					continue;
-				} else {
-					// This is a valid drug pair
-					allDrugPairs.add(new DrugPair(drugA, drugB));
-				}
-				b++;
+				} 
+				pointerB++;
 			}
-			a++;
+			pointerA++;
 		}
+		LOGGER.info("Found {} drug pairs.", allDrugPairs.size());
 
 		return allDrugPairs;
 	}
@@ -231,15 +254,17 @@ public class DrugPairCalculator {
 	private static Options getOptions() {
 		Options options = new Options();
 		// Input file option
-		Option inputFilename = OptionBuilder.withLongOpt("in").withArgName("in").hasArg()
-				.isRequired(true).withDescription("input filename").create();
+		Option inputFilename = OptionBuilder.withLongOpt("in")
+				.withArgName("in").hasArg().isRequired(true)
+				.withDescription("input filename").create();
 		options.addOption(inputFilename);
-		Option outputFilename = OptionBuilder.withLongOpt("out").withArgName("out").hasArg()
-				.isRequired(false).withDescription("output filename").create();
+		Option outputFilename = OptionBuilder.withLongOpt("out")
+				.withArgName("out").hasArg().isRequired(false)
+				.withDescription("output filename").create();
 		options.addOption(outputFilename);
-		Option minimumOccurrences = OptionBuilder.withLongOpt("min").withArgName("min").hasArg()
-				.isRequired(false).withDescription("minimum occurrences")
-				.create();
+		Option minimumOccurrences = OptionBuilder.withLongOpt("min")
+				.withArgName("min").hasArg().isRequired(false)
+				.withDescription("minimum occurrences").create();
 		options.addOption(minimumOccurrences);
 		return options;
 	}
@@ -256,8 +281,8 @@ public class DrugPairCalculator {
 		CommandLineParser parser = new BasicParser();
 		Options options = getOptions();
 		try {
-			
-			// Input file is NOT optional 
+
+			// Input file is NOT optional
 			CommandLine line = parser.parse(options, args_);
 			String inputFilename = null;
 			if (line.hasOption("in")) {
@@ -266,7 +291,7 @@ public class DrugPairCalculator {
 				LOGGER.error("Could not calculate drug pairs due to missing input filename.");
 				System.exit(1);
 			}
-			
+
 			// Min occurrences is optional
 			Integer minOccurrences;
 			if (line.hasOption("min")) {
@@ -274,23 +299,24 @@ public class DrugPairCalculator {
 			} else {
 				minOccurrences = DEFAULT_MINIMUM_OCCURRENCES;
 			}
-			
+
 			// Output is optional
 			String outputFilename;
 			if (line.hasOption("out")) {
 				outputFilename = line.getOptionValue("out");
 			} else {
-				outputFilename = createOutputFilename(inputFilename, minOccurrences);
+				outputFilename = createOutputFilename(inputFilename,
+						minOccurrences);
 			}
 
 			DrugPairCalculator calculator = new DrugPairCalculator();
-			calculator.writeAllDrugPairs(inputFilename, outputFilename, minOccurrences);
-			
+			calculator.writeAllDrugPairs(inputFilename, outputFilename,
+					minOccurrences);
+
 		} catch (ParseException e) {
 			LOGGER.error(
 					"Could not calculate drug pairs due to parse exception.", e);
 		}
-
 
 	}
 }

@@ -72,6 +72,13 @@ public class AdministrationInstance {
 	}
 
 	@Override
+	public String toString() {
+		return "AdministrationInstance [_patientIdentifier="
+				+ _patientIdentifier + ", _administrationDate="
+				+ _administrationDate + "]";
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -107,5 +114,5 @@ public class AdministrationInstance {
 			return false;
 		return true;
 	}
-	
+
 }

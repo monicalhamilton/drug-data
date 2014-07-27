@@ -83,13 +83,31 @@ public class DrugPairCalculator {
 
 		Map<AdministrationInstance, Set<String>> drugAdminMap = getMapOfAdminInstanceToDrugsAdministered(drugAdministrations_);
 		Map<DrugPair, Integer> drugPairMap = getMapOfDrugPairToOccurrence(drugAdminMap);
+		Set<DrugPair> drugPairsWithMinOccurrence = getDrugPairsWithMinOccurrence(
+				drugPairMap, minOccurrence_);
 
+		return drugPairsWithMinOccurrence;
+	}
+
+	/**
+	 * Get the drug pairs that occur with at least the minimum specified
+	 * occurrence.
+	 * 
+	 * @param drugPairToOccurrenceMap_
+	 *            A map of drug pairs to their occurrence level.
+	 * @param minOccurrence_
+	 *            The minimum occurrence of the drug pair required.
+	 * @return Only those drug pairs meeting the minimum occurrence.
+	 */
+	protected Set<DrugPair> getDrugPairsWithMinOccurrence(
+			final Map<DrugPair, Integer> drugPairToOccurrenceMap_,
+			final int minOccurrence_) {
 		// Now only return those that meet the minimum occurrence requirements
 		LOGGER.info(
 				"Going to calculate which of the {} drug pairs occurred more than {} times.",
-				drugPairMap.size(), minOccurrence_);
+				drugPairToOccurrenceMap_.size(), minOccurrence_);
 		Set<DrugPair> drugPairsWithMinOccurrence = new HashSet<DrugPair>();
-		for (Map.Entry<DrugPair, Integer> drugPairEntry : drugPairMap
+		for (Map.Entry<DrugPair, Integer> drugPairEntry : drugPairToOccurrenceMap_
 				.entrySet()) {
 			Integer drugPairOccurrence = drugPairEntry.getValue();
 			if (drugPairOccurrence >= minOccurrence_) {
@@ -97,9 +115,9 @@ public class DrugPairCalculator {
 				drugPairsWithMinOccurrence.add(drugPair);
 			}
 		}
-		LOGGER.info(
-				"Found {} drug pairs that occurred more than {} times.",
+		LOGGER.info("Found {} drug pairs that occurred more than {} times.",
 				drugPairsWithMinOccurrence.size(), minOccurrence_);
+
 		return drugPairsWithMinOccurrence;
 	}
 
@@ -198,7 +216,7 @@ public class DrugPairCalculator {
 	 */
 	protected Set<DrugPair> findAllDrugPairs(final Set<String> drugSet_) {
 		LOGGER.info("Finding all drug pairs for {} drugs.", drugSet_.size());
-		
+
 		// Create the set to return.
 		Set<DrugPair> allDrugPairs = new HashSet<DrugPair>();
 
@@ -222,12 +240,12 @@ public class DrugPairCalculator {
 				if (pointerA < pointerB) {
 					// This is a valid drug pair
 					allDrugPairs.add(new DrugPair(drugA, drugB));
-					
+
 					// If a and b are pointing to the same drug, skip
 					// because the drug pair (a, a) is not meaningful.
 					// If a is pointing to a drug after b, skip
 					// because we don't need both (a, b) and (b, a).
-				} 
+				}
 				pointerB++;
 			}
 			pointerA++;

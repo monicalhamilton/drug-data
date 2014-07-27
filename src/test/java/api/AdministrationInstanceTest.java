@@ -2,7 +2,7 @@ package api;
 
 import junit.framework.Assert;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.junit.Test;
 
 public class AdministrationInstanceTest {
@@ -11,7 +11,7 @@ public class AdministrationInstanceTest {
 	@Test
 	public void testParseDateTime() {
 		String testString = "2013-01-31";
-		DateTime testJoda = new DateTime(2013, 1, 31, 0, 0);
+		LocalDate testJoda = new LocalDate(2013, 1, 31);
 		Assert.assertEquals(new AdministrationInstance(ID, testString),
 				new AdministrationInstance(ID, testJoda));
 	}
@@ -20,7 +20,7 @@ public class AdministrationInstanceTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testParseDateTimeFail() {
 		String testString = "20130131";
-		DateTime testJoda = new DateTime(2013, 1, 31, 0, 0);
+		LocalDate testJoda = new LocalDate(2013, 1, 31);
 		Assert.assertEquals(new AdministrationInstance(ID, testString),
 				new AdministrationInstance(ID, testJoda));
 	}

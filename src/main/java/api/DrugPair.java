@@ -3,6 +3,11 @@ package api;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 /**
  * Wraps a pair of drugs for convenience. Does checks that the two drugs differ
  * from each other.
@@ -32,28 +37,19 @@ public class DrugPair {
 	}
 
 	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this,
+				ToStringStyle.SHORT_PREFIX_STYLE);
+	}
+
+	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((_drugs == null) ? 0 : _drugs.hashCode());
-		return result;
+		return HashCodeBuilder.reflectionHashCode(this);
 	}
 
 	@Override
 	public boolean equals(Object obj_) {
-		if (this == obj_)
-			return true;
-		if (obj_ == null)
-			return false;
-		if (getClass() != obj_.getClass())
-			return false;
-		DrugPair other = (DrugPair) obj_;
-		if (_drugs == null) {
-			if (other._drugs != null)
-				return false;
-		} else if (!_drugs.equals(other._drugs))
-			return false;
-		return true;
+		return EqualsBuilder.reflectionEquals(this, obj_);
 	}
-	
+
 }

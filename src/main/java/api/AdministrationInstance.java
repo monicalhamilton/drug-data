@@ -1,6 +1,10 @@
 package api;
 
-import org.joda.time.DateTime;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -15,7 +19,7 @@ public class AdministrationInstance {
 			.forPattern("yyyy-MM-dd");
 
 	private final String _patientIdentifier;
-	private final DateTime _administrationDate;
+	private final LocalDate _administrationDate;
 
 	/**
 	 * Constructor for an administration instance.
@@ -26,7 +30,7 @@ public class AdministrationInstance {
 	 *            The administration date.
 	 */
 	public AdministrationInstance(final String patientIdentifier_,
-			final DateTime administrationDate_) {
+			final LocalDate administrationDate_) {
 		_patientIdentifier = patientIdentifier_;
 		_administrationDate = administrationDate_;
 	}
@@ -56,7 +60,7 @@ public class AdministrationInstance {
 	/**
 	 * @return The administration date.
 	 */
-	public DateTime getAdministrationDate() {
+	public LocalDate getAdministrationDate() {
 		return _administrationDate;
 	}
 
@@ -67,52 +71,24 @@ public class AdministrationInstance {
 	 *            The date string when the administration occurred.
 	 * @return The date time object.
 	 */
-	protected DateTime parseDateString(final String administrationDateString_) {
-		return FORMATTER.parseDateTime(administrationDateString_);
+	protected LocalDate parseDateString(final String administrationDateString_) {
+		return FORMATTER.parseLocalDate(administrationDateString_);
 	}
 
 	@Override
 	public String toString() {
-		return "AdministrationInstance [_patientIdentifier="
-				+ _patientIdentifier + ", _administrationDate="
-				+ _administrationDate + "]";
+		return ToStringBuilder.reflectionToString(this,
+				ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime
-				* result
-				+ ((_administrationDate == null) ? 0 : _administrationDate
-						.hashCode());
-		result = prime
-				* result
-				+ ((_patientIdentifier == null) ? 0 : _patientIdentifier
-						.hashCode());
-		return result;
+		return HashCodeBuilder.reflectionHashCode(this);
 	}
 
 	@Override
 	public boolean equals(Object obj_) {
-		if (this == obj_)
-			return true;
-		if (obj_ == null)
-			return false;
-		if (getClass() != obj_.getClass())
-			return false;
-		AdministrationInstance other = (AdministrationInstance) obj_;
-		if (_administrationDate == null) {
-			if (other._administrationDate != null)
-				return false;
-		} else if (!_administrationDate.equals(other._administrationDate))
-			return false;
-		if (_patientIdentifier == null) {
-			if (other._patientIdentifier != null)
-				return false;
-		} else if (!_patientIdentifier.equals(other._patientIdentifier))
-			return false;
-		return true;
+		return EqualsBuilder.reflectionEquals(this, obj_);
 	}
 
 }

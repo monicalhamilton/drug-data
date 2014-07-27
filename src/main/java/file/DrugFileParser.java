@@ -97,7 +97,7 @@ public class DrugFileParser {
 		SingleDrugAdministration drugAdmin = new SingleDrugAdministration(
 				adminInstance, drugName);
 
-		LOGGER.info("Parsed line into {}", drugAdmin);
+		LOGGER.debug("Parsed line into {}", drugAdmin);
 
 		return drugAdmin;
 	}

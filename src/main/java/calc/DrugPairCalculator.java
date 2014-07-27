@@ -205,6 +205,7 @@ public class DrugPairCalculator {
 		// You can't have a pair if there is one or fewer drugs.
 		int numDrugs = drugSet_.size();
 		if (numDrugs <= 1) {
+			LOGGER.info("Found 0 drug pairs for {} drugs.", drugSet_.size());
 			// Return an empty set of drug pairs.
 			return allDrugPairs;
 		}
@@ -214,10 +215,10 @@ public class DrugPairCalculator {
 		List<String> drugList = new LinkedList<String>(drugSet_);
 		int pointerA = 0;
 		for (String drugA : drugList) {
-			LOGGER.info("Drug A: {}. Pointer A: {}.", drugA, pointerA);
+			LOGGER.debug("Drug A: {}. Pointer A: {}.", drugA, pointerA);
 			int pointerB = 0;
 			for (String drugB : drugList) {
-				LOGGER.info("Drug B: {}. Pointer B: {}.", drugB, pointerB);
+				LOGGER.debug("Drug B: {}. Pointer B: {}.", drugB, pointerB);
 				if (pointerA < pointerB) {
 					// This is a valid drug pair
 					allDrugPairs.add(new DrugPair(drugA, drugB));

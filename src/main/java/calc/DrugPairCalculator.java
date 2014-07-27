@@ -82,7 +82,7 @@ public class DrugPairCalculator {
 				minOccurrence_, drugAdministrations_.size());
 
 		Map<AdministrationInstance, Set<String>> drugAdminMap = getMapOfAdminInstanceToDrugsAdministered(drugAdministrations_);
-		Map<DrugPair, Integer> drugPairMap = getMapOfDrugPairtoOccurrence(drugAdminMap);
+		Map<DrugPair, Integer> drugPairMap = getMapOfDrugPairToOccurrence(drugAdminMap);
 
 		// Now only return those that meet the minimum occurrence requirements
 		LOGGER.info(
@@ -154,7 +154,7 @@ public class DrugPairCalculator {
 	 *            given during that administration.
 	 * @return A map of pairs of drugs to number of times administered together.
 	 */
-	protected Map<DrugPair, Integer> getMapOfDrugPairtoOccurrence(
+	protected Map<DrugPair, Integer> getMapOfDrugPairToOccurrence(
 			final Map<AdministrationInstance, Set<String>> drugAdminMap_) {
 		LOGGER.info("Going to map drug pairs to number of occurrences for "
 				+ "{} administration instances.", drugAdminMap_.size());

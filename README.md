@@ -18,7 +18,7 @@ To obtain the calculator, import from github https://github.com/monicalhamilton/
 
 To run the calculator, run the DrugPairCalculationMain with an input filename, an output filename if desired, and a threshold if desired (defaults to 25). Usage is as follows:
 
-java DrugPairCalculationMain --in <input_filename> [--out <output_filename>] [--min <minimum_occurrences>]
+java DrugPairCalculationMain --in input_filename [--out output_filename] [--min minimum_occurrences]
 
 TESTING
 

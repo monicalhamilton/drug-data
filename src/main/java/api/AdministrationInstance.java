@@ -5,7 +5,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 /**
- * Holds a unique drug administration occurrence.
+ * Holds an administration instance, as defined by a patient and date.
  * 
  * @author Monica
  */
@@ -46,16 +46,66 @@ public class AdministrationInstance {
 		_administrationDate = parseDateString(administrationDateString_);
 	}
 
+	/**
+	 * @return The patient identifier.
+	 */
 	public String getPatientIdentifier() {
 		return _patientIdentifier;
 	}
 
+	/**
+	 * @return The administration date.
+	 */
 	public DateTime getAdministrationDate() {
 		return _administrationDate;
 	}
 
+	/**
+	 * Parse a date string of format yyyy-MM-dd to a Joda DateTime.
+	 * 
+	 * @param administrationDateString_
+	 *            The date string when the administration occurred.
+	 * @return The date time object.
+	 */
 	protected DateTime parseDateString(final String administrationDateString_) {
 		return FORMATTER.parseDateTime(administrationDateString_);
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime
+				* result
+				+ ((_administrationDate == null) ? 0 : _administrationDate
+						.hashCode());
+		result = prime
+				* result
+				+ ((_patientIdentifier == null) ? 0 : _patientIdentifier
+						.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj_) {
+		if (this == obj_)
+			return true;
+		if (obj_ == null)
+			return false;
+		if (getClass() != obj_.getClass())
+			return false;
+		AdministrationInstance other = (AdministrationInstance) obj_;
+		if (_administrationDate == null) {
+			if (other._administrationDate != null)
+				return false;
+		} else if (!_administrationDate.equals(other._administrationDate))
+			return false;
+		if (_patientIdentifier == null) {
+			if (other._patientIdentifier != null)
+				return false;
+		} else if (!_patientIdentifier.equals(other._patientIdentifier))
+			return false;
+		return true;
+	}
+	
 }

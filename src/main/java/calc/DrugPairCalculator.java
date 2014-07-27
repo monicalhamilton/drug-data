@@ -162,7 +162,7 @@ public class DrugPairCalculator {
 			}
 		}
 
-		LOGGER.info("Mapped {} drug pairs to their respecitive occurrences.",
+		LOGGER.info("Mapped {} drug pairs to their respective occurrences.",
 				drugPairToOccurrenceMap.size());
 		return drugPairToOccurrenceMap;
 

@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import file.DrugFileParser;
 import file.DrugPairFileWriter;
 
@@ -15,6 +18,9 @@ import api.DrugPair;
 import api.SingleDrugAdministration;
 
 public class DrugPairCalculator {
+
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(DrugPairCalculator.class);
 
 	private final DrugFileParser _drugFileParser = new DrugFileParser();
 	private final DrugPairFileWriter _drugPairFileWriter = new DrugPairFileWriter();
@@ -35,6 +41,9 @@ public class DrugPairCalculator {
 	 */
 	public void getAllDrugPairs(final String inFilename_,
 			final String outFilename_, final int minOccurrence_) {
+		LOGGER.info(
+				"Going to get all drug pairs from {} with minimum occurrence {} and write to file {}.",
+				inFilename_, minOccurrence_, outFilename_);
 		List<SingleDrugAdministration> drugAdmins = _drugFileParser
 				.parseFile(inFilename_);
 		Set<DrugPair> drugPairs = getDrugPairsWithMinOccurence(drugAdmins,

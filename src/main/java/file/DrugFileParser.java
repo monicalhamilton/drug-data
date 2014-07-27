@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
 import api.AdministrationInstance;
 import api.SingleDrugAdministration;
 
@@ -47,7 +45,7 @@ public class DrugFileParser {
 			}
 		} catch (FileNotFoundException e) {
 			// TODO
-			System.out.println("Caught exception.");
+			System.out.println("Could not parse file " + filename_ + " because file was not found.");
 		} catch (IOException e) {
 			// TODO
 		} finally {
